@@ -1,0 +1,56 @@
+----------Fichier pour la Simulation LiDAR-------------------
+Ce fichier contient l'ensemble des param�tres n�cessaires �
+la simulation LiDAR______________________________________________________________
+---------------Simulation Parameters-----------------------
+240000	Number of samples
+0.0125	Sample Time
+_____________________________________________________
+---------------Wind Spectrum Parameters-----------------------
+10		Wind Mean Speed @ HubHeight
+130		Wave-Length (input from 100 to 500m)
+1		Variance of the longitudinal component
+0.7		0Variance of the transversal Component
+0.3		Variance of the vertical component
+____________________________________________________________
+---------------Wind Field Parameters-------------------------
+80		HubHeigt
+0.3		Vertical Shear
+100		Grid width
+100		Grid height
+11		Grid sqrt(Npoints)
+____________________________________________________________
+Phi	Th	Distance----LiDAR Measurment Parameters--------------
+15	0	40		Mesure LiDAR
+15	90	40		Mesure LiDAR
+15	180	40		Mesure LiDAR
+15	270	40		Mesure LiDAR
+15	0	70		Mesure LiDAR
+15	90	70		Mesure LiDAR
+15	180	70		Mesure LiDAR
+15	270	70		Mesure LiDAR
+15	0	100		Mesure LiDAR
+15	90	100		Mesure LiDAR
+15	180	100		Mesure LiDAR
+15	270	100		Mesure LiDAR
+15	0	130		Mesure LiDAR
+15	90	130		Mesure LiDAR
+15	180	130		Mesure LiDAR
+15	270	130		Mesure LiDAR
+15	0	160		Mesure LiDAR
+15	90	160		Mesure LiDAR
+15	180	160		Mesure LiDAR
+15	270	160		Mesure LiDAR
+END	
+END			END/t mus130t appear here
+
+
+
+
+
+
+______________________________________________________________
+Time Length Size-----------Gust Generation------------------------
+50	10	10	Gust Added
+
+
+FIN PROVISOIRE DES MESURES LiDAR
