@@ -1,0 +1,21 @@
+[build-system]
+
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+
+name = "wgen"
+version = "0.0.1"
+
+authors = [
+  { name="Jean-François LECOMTE", email="jean-francois.lecomte@ifpen.fr" },
+]
+
+description = "Module IFPEN pour une gérénation de vents basique"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools]
+packages = ["wgen"]
