@@ -1,4 +1,3 @@
-import os
 import unittest
 from wgen.locations import Grid
 from wgen.display import display_points

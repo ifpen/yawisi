@@ -21,6 +21,9 @@ class LiDARSimulationParameters:
             self.SigmaZ=float(data[12].split('\t')[0]) #Lecture de la variance longitudinale
             self.VerticalShearParameter=float(data[16].split('\t')[0]) #Lecture du parametre de gradient
             self.ReferenceHeight=float(data[15].split('\t')[0]) #Lecture de la hauteur de reference du champ de vent
+            self.GridWidth=float(data[17].split('\t')[0])
+            self.GridHeight=float(data[18].split('\t')[0])
+            self.GridLength= int(data[19].split('\t')[0])
 
 
     def __str__(self) -> str:
@@ -32,4 +35,7 @@ class LiDARSimulationParameters:
         msg +=f'Vertical Component Variance initialized @ {self.SigmaZ}\n'
         msg +=f'PL Exp Law initialized  @ {self.VerticalShearParameter}\n'
         msg +=f'Reference Height @ {self.ReferenceHeight}\n'
+        msg +=f'Grid Width @ {self.GridWidth}\n'
+        msg +=f'Grid Height @ {self.GridWidth}\n'
+        msg +=f'Grid Length @ {self.GridLength}\n'
         return msg

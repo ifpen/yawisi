@@ -28,6 +28,14 @@ def display_spectrum(spectrum: LiDARSpectrum, Npts=1000, FMax=4.0 ):
     plt.legend()
     plt.show()
 
+
+def display_coherence_function(freq, coherence_function):
+    plt.plot(freq, coherence_function)
+    plt.ylabel('Coherence')
+    plt.xlabel("Freq")
+    plt.show()
+
+
 def display_points(grid: Grid):
     #Affichage des points du champ simple, sans description des parametres
     fig=plt.figure()
@@ -45,8 +53,8 @@ def display_field(wind_field: LiDARWindField):
     # des points de generation du vent
     print('_______________Wind Field Display___________________________________')
     print('Simulation Parameters:')
-    print('Samples Numbers: %s' % wind_field.SimulationParameters.NSamples)
-    print('SampleTime: %s' % wind_field.SimulationParameters.SampleTime)
+    print('Samples Numbers: %s' % wind_field.params.NSamples)
+    print('SampleTime: %s' % wind_field.params.SampleTime)
     #Affichage des points dans le fenetre de commande,
     #display des points dans une figure
     print('WindField Points:')
@@ -64,8 +72,8 @@ def display_field(wind_field: LiDARWindField):
         Time=[]
         ii=0
         ax2 = fig.add_subplot(111)
-        while ii<wind_field.SimulationParameters.NSamples:
-            Time.append(float(ii)*wind_field.SimulationParameters.SampleTime)
+        while ii<wind_field.params.NSamples:
+            Time.append(float(ii)*wind_field.params.SampleTime)
             ii+=1
         i=0
         while i<len(wind_field.Points):
