@@ -2,14 +2,14 @@
 Ce fichier contient l'ensemble des param�tres n�cessaires �
 la simulation LiDAR______________________________________________________________
 ---------------Simulation Parameters-----------------------
-240000	Number of samples
-0.0125	Sample Time
+12000	Number of samples
+0.25	Sample Time
 _____________________________________________________
 ---------------Wind Spectrum Parameters-----------------------
 10		Wind Mean Speed @ HubHeight
 130		Wave-Length (input from 100 to 500m)
 1		Variance of the longitudinal component
-0.7		0Variance of the transversal Component
+0.7		Variance of the transversal Component
 0.3		Variance of the vertical component
 ____________________________________________________________
 ---------------Wind Field Parameters-------------------------

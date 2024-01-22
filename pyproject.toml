@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 
-name = "wgen"
+name = "pywisim"
 version = "0.0.1"
 
 authors = [
@@ -18,4 +18,4 @@ description = "Module IFPEN pour une gérénation de vents basique"
 dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools]
-packages = ["wgen"]
+packages = ["pywisim"]

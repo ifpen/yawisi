@@ -1,6 +1,6 @@
 import unittest
-from wgen.locations import Grid
-from wgen.display import display_points
+from pywisim.locations import Grid
+from pywisim.display import display_points
 import matplotlib.pyplot as plt
 
 class TestSimulationParameters(unittest.TestCase):

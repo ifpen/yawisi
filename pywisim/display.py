@@ -1,30 +1,26 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from wgen.spectrum import LiDARSpectrum
-from wgen.wind_field import LiDARWindField
-from wgen.locations import Grid
+from pywisim.spectrum import LiDARSpectrum
+from pywisim.wind_field import LiDARWindField
+from pywisim.locations import Grid
+from pywisim.wind import LiDARWind
 
 
-def display_spectrum(spectrum: LiDARSpectrum, Npts=1000, FMax=4.0 ):
+def display_spectrum(spectrum: LiDARSpectrum ):
     """
-    Cette fonction permet de faire l'affichage du spectre defini sur Npts Points avec une
-    une frequence max de FMax Hz
+    Cette fonction permet de faire l'affichage du spectre 
     """
 
-    freq = np.arange(0, FMax, FMax/Npts)
-    array = np.zeros(shape=(3, Npts))
-    array[0, :] = spectrum.kernel(spectrum.SigmaX, freq)
-    array[1, :] = spectrum.kernel(spectrum.SigmaY, freq)
-    array[2, :] = spectrum.kernel(spectrum.SigmaZ, freq)
+    freq, array = spectrum.compute()
 
     fig = plt.figure()
     fig.suptitle('Spectre du vent', fontsize=20)
     plt.xlabel('Frequence (Hz)', fontsize=18)
     plt.ylabel('Spectre', fontsize=16)
-    plt.plot(freq, array[0,:],label='Wx')
-    plt.plot(freq, array[1,:],label='Wy')
-    plt.plot(freq, array[2,:],label='Wz')
+    plt.plot(freq, array[:, 0],label='Wx')
+    plt.plot(freq, array[:, 1],label='Wy')
+    plt.plot(freq, array[:, 2],label='Wz')
     plt.legend()
     plt.show()
 
@@ -34,6 +30,26 @@ def display_coherence_function(freq, coherence_function):
     plt.ylabel('Coherence')
     plt.xlabel("Freq")
     plt.show()
+
+  
+def display_wind(wind: LiDARWind):
+        #Cette fonction permet d'afficher le signal de vent contenu dans l'objet.
+        # Si le vent n'a pas ete initialise, on visualise 0 pour tous les echantillons
+       
+        time = np.arange(start=0, stop=wind.params.total_time, step=wind.params.SampleTime)
+        #affichage des trois composantes
+        fig=plt.figure()
+        ax = fig.add_subplot(111)
+        #print self.WindValues
+        #print self.WindValues[0,:]
+        fig.suptitle('Vent genere', fontsize=20)
+        ax.plot(time,wind.WindValues[:, 0],label='wx')
+        ax.plot(time,wind.WindValues[:, 1],label='wy')
+        ax.plot(time,wind.WindValues[:, 2],label='wz')
+        plt.ylabel('Vent en m/s')
+        plt.xlabel("Temps")
+        plt.legend()
+        plt.show()
 
 
 def display_points(grid: Grid):
