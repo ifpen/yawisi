@@ -1,6 +1,6 @@
 import os
 import unittest
-from wgen.parameters import LiDARSimulationParameters
+from pywisim.parameters import LiDARSimulationParameters
 class TestSimulationParameters(unittest.TestCase):
 
     def __init__(self, methodName: str = "runTest") -> None:

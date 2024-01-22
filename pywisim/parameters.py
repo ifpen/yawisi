@@ -25,6 +25,10 @@ class LiDARSimulationParameters:
             self.GridHeight=float(data[18].split('\t')[0])
             self.GridLength= int(data[19].split('\t')[0])
 
+    @property
+    def total_time(self):
+        return self.NSamples*self.SampleTime
+
 
     def __str__(self) -> str:
         msg = f'Number of Samples Initialized @ {self.NSamples}\n'

@@ -1,25 +1,23 @@
 import os
 import unittest
 from pywisim.parameters import LiDARSimulationParameters
-from pywisim.wind_field import LiDARWindField
-from pywisim.display import display_coherence_function
+from pywisim.wind import LiDARWind
+from pywisim.display import display_wind
 import matplotlib.pyplot as plt
 
-class TestWindField(unittest.TestCase):
+class TestWind(unittest.TestCase):
 
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
 
-    def test_grid(self):
+    def test_wind(self):
         filename = os.path.join(os.path.dirname(__file__), "../data", "Simulationcourte.li")
         params = LiDARSimulationParameters(filename)
 
-        wind_field = LiDARWindField(params)
+        wind = LiDARWind(params)
+        wind.compute()
 
-        freq, coherence = wind_field.get_coherence_function()
-        display_coherence_function(freq, coherence)
-
-        wind_field._compute_fft_seed()
+        display_wind(wind)
 
         
 

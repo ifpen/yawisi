@@ -1,6 +1,6 @@
 from scipy.spatial.distance import cdist
 import numpy as np
-from wgen.parameters import LiDARSimulationParameters
+from pywisim.parameters import LiDARSimulationParameters
 
 class Locations:
 

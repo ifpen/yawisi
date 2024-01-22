@@ -1,8 +1,8 @@
 import os
 import unittest
-from wgen.parameters import LiDARSimulationParameters
-from wgen.spectrum import LiDARSpectrum
-from wgen.display import display_spectrum
+from pywisim.parameters import LiDARSimulationParameters
+from pywisim.spectrum import LiDARSpectrum
+from pywisim.display import display_spectrum
 
 
 class TestSpectrum(unittest.TestCase):

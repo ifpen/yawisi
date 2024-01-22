@@ -1,11 +1,23 @@
-from wgen.parameters import LiDARSimulationParameters
-from wgen.kernels import Kaimal
+import numpy as np
+
+from pywisim.parameters import LiDARSimulationParameters
+from pywisim.kernels import Kaimal
 
 class LiDARSpectrum:
 
     def __init__(self, params:LiDARSimulationParameters):
         self.params = params
         self.kernel = Kaimal(self)
+        
+
+    def compute(self, Npts=1000, FMax=4.0):
+        freq = np.arange(0, FMax, FMax/Npts)
+        array = np.zeros(shape=(Npts, 3))
+        array[:, 0] = self.kernel(self.SigmaX, freq)
+        array[:, 1] = self.kernel(self.SigmaY, freq)
+        array[:, 2] = self.kernel(self.SigmaZ, freq)
+
+        return freq, array 
 
     @property
     def SigmaX(self):
@@ -129,37 +141,4 @@ class LiDARSpectrum:
         plt.legend()
         plt.show()
         
-    
-    def GenerateSignalFromWind(self,Wind):
-        #Cette Fonction permet de recuperer le vent genere a partir d'une seed de vent.
-        Ts=Wind.SimulationParameters.SampleTime #Pertiode d'echantillonage
-        N=Wind.SimulationParameters.NSamples
-        freq=[]
-        Spectrum=array([[0.0]*N]*3)
-        print(N)
-        Time=[]
-        i=0
-        while i<N:
-            #Definition des vecteur de frequence et de temps
-            freq.append(float(i)/Ts/N)
-            Time.append(float(i)*Ts)
-            #definition des spectres
-            Spectrum[0,i]=(2*(self.SigmaX**2)*self.Lv/self.WindMean)/(1+2*3.14159*(float(i)/float(N)/Ts)*self.Lv/self.WindMean)**(float(5/3))
-            Spectrum[1,i]=(2*(self.SigmaY**2)*self.Lv/self.WindMean)/(1+2*3.14159*(float(i)/float(N)/Ts)*self.Lv/self.WindMean)**(float(5/3))
-            Spectrum[2,i]=(2*(self.SigmaZ**2)*self.Lv/self.WindMean)/(1+2*3.14159*(float(i)/float(N)/Ts)*self.Lv/self.WindMean)**(float(5/3))
-            i+=1
-            #multiplication des spectres
-        WindSpectrumX=multiply(fft.fft(Wind.SeedX),Spectrum[0,:]+Spectrum[0,:][::-1])
-        WindSpectrumY=multiply(fft.fft(Wind.SeedY),Spectrum[1,:]+Spectrum[1,:][::-1])
-        WindSpectrumZ=multiply(fft.fft(Wind.SeedZ),Spectrum[2,:]+Spectrum[2,:][::-1])
-        #Affichage
-        #plt.plot(Time,fft.ifft(WindSpectrumX).real+self.WindMean,label='wx')
-        #plt.plot(Time,fft.ifft(WindSpectrumY).real,label='wy')
-        #plt.plot(Time,fft.ifft(WindSpectrumZ).real,label='wz')
-        #plt.ylabel('Vent en m/s')
-        #plt.xlabel("Temps")
-        #plt.legend()
-        #plt.show()
-        #renvoie les valeurs de vent
-        return array([fft.ifft(WindSpectrumX).real+self.WindMean,fft.ifft(WindSpectrumY).real,fft.ifft(WindSpectrumZ).real])
-    
+   
