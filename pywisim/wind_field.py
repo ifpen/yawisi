@@ -23,6 +23,10 @@ class LiDARWindField:
        
      
         self.WindValuesInitialized=0 # Flag pour l'initialisation des valeurs de vent
+
+    @property
+    def is_initialized(self) -> bool:
+        return len(self.Wind) > 0
     
     def get_coherence_function(self):
         N=self.params.NSamples
@@ -36,7 +40,7 @@ class LiDARWindField:
         return freq, coherence_function
     
 
-    def _compute_fft_seed(self):
+    def compute(self):
 
         N = self.params.NSamples
         n_points = len(self.Points)

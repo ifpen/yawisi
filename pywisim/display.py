@@ -74,14 +74,14 @@ def display_field(wind_field: LiDARWindField):
     #Affichage des points dans le fenetre de commande,
     #display des points dans une figure
     print('WindField Points:')
-    i=0
-    while i<len(wind_field.Points):
-        print('Point %s : Y=%s, Z=%s' % (i,wind_field.Points[i][0],wind_field.Points[i][1]))
-        i+=1
+    for i in range(len(wind_field.Points)):
+        pt = wind_field.Points.points[i]
+        print('Point %s : Y=%s, Z=%s' % (i,pt[0],pt[1]))
+        
     fig=plt.figure()
     fig.suptitle('Vent genere', fontsize=20)
     # Affichage des signaux de vent si ils ont ete initialises
-    if wind_field.WindValuesInitialized==0:
+    if not wind_field.is_initialized:
         print('Warning: Wind Values have not been initialized')
     else:
         print('Wind Values have been initialized')
@@ -93,9 +93,10 @@ def display_field(wind_field: LiDARWindField):
             ii+=1
         i=0
         while i<len(wind_field.Points):
-            ax2.plot(Time,wind_field.Wind[i].WindValues[0,:],label='w_x , point[%s,%s]' % (wind_field.Points[i][0],wind_field.Points[i][1]))
-            ax2.plot(Time,wind_field.Wind[i].WindValues[1,:],'-',label='w_y , point[%s,%s]' % (wind_field.Points[i][0],wind_field.Points[i][1]) )
-            ax2.plot(Time,wind_field.Wind[i].WindValues[2,:],'.',label='w_z , point[%s,%s]' % (wind_field.Points[i][0],wind_field.Points[i][1]) )
+            pt = wind_field.Points.points[i]
+            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 0],label='w_x , point[%s,%s]' % (pt[0],pt[1]))
+            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 0],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
+            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 1],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )
             i+=1    
         ax2.set_ylabel('Vent(m/s)')
         ax2.set_xlabel("Temps")

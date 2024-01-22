@@ -48,7 +48,8 @@ class LiDARWind:
         # Création d'un spectre si aucun n'est donné.
         if lidar_spectrum is None:
             lidar_spectrum = LiDARSpectrum(self.params)
-            _, spectrum = lidar_spectrum.compute(N, Ts*N)
+        
+        _, spectrum = lidar_spectrum.compute(N, Ts*N)
 
         #initialisation des seeds si aucune n'est donnée en paramètre.
         if fft_seed is None:
