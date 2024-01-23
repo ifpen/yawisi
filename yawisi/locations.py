@@ -22,12 +22,12 @@ class Locations:
     def point(self, index):
         return self.points[index]
 
-    def x_array(self):
-        pass
-
     def y_array(self):
-        pass
-
+        return self.points[:, 0]
+    
+    def z_array(self):
+        return self.points[:, 1]
+    
     def get_distance_matrix(self):
         return cdist(self.points, self.points, metric='euclidean')
     
@@ -53,15 +53,13 @@ class Grid(Locations):
         self.size = np.array([width, height])
        
         self._make_points()
-
-    def x_array(self):
-        return self.points[:, 0]
-    
-    def y_array(self):
-        return self.points[:, 1]
         
     def _index(self, i, j):
         return i + self.dims[0]*j
+    
+    def coords(self, idx):
+        return idx % self.dims[0], idx // self.dims[0] 
+    
     
     def _make_points(self):
         self.points = np.zeros(shape=(self.dims[0]*self.dims[1], 2), dtype=np.float64)

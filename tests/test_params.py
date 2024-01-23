@@ -7,20 +7,11 @@ class TestSimulationParameters(unittest.TestCase):
         super().__init__(methodName)
 
     def test_params(self):
-        filename = os.path.join(os.path.dirname(__file__), "../data", "Simulationcourte.li")
+        filename = os.path.join(os.path.dirname(__file__), "config.ini")
 
         params = LiDARSimulationParameters(filename)
         print(params)
 
 if __name__ == "__main__":
     unittest.main()
-    # params = LiDARSimulationParameters.init_from_text("Simulationcourte.li")
-    # print(params)
-
-    # spectrum = LiDARSpectrum.init_spectrum_from_text("Simulationcourte.li")
-    # print(spectrum)
-
-    # spectrum.display()
-
-    # spectrum.GenerateSignal(params)
     

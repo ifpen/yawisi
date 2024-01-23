@@ -23,14 +23,12 @@ class Kaimal(Kernel):
 		return self.Kv[i_sigma]/(1.+(2*math.pi*freq)*self.Tv)**(5/3)
 	
 
-
 class Karman(Kernel):
 	def __init__(self, params: LiDARSimulationParameters):
 		super().__init__(params)
 
 	def __call__(self, i_sigma, freq, *args, **kwds):
 		return self.Kv[i_sigma]/(1.+((2*math.pi*freq)*self.Tv)**2)**(5/6)
-
 
 class CoherenceKernel:
 

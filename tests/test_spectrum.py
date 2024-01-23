@@ -11,15 +11,13 @@ class TestSpectrum(unittest.TestCase):
         super().__init__(methodName)
 
     def test_params(self):
-        filename = os.path.join(os.path.dirname(__file__), "../data", "Simulationcourte.li")
+        filename = os.path.join(os.path.dirname(__file__), "config.ini")
 
         params = LiDARSimulationParameters(filename)
         params.n_samples = 1000
-        params.sample_time = 0.001
+        params.sample_time = 1
         spectrum = LiDARSpectrum(params)
       
-
-
         display_spectrum(spectrum)
 
 

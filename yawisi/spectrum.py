@@ -7,14 +7,25 @@ class LiDARSpectrum:
 
     def __init__(self, params:LiDARSimulationParameters):
         self.params = params
-        self.kernel = Kaimal(params)
+        try:
+            kind = self.params.kind.lower()
+            self.kernel = {
+                "kaimal": Kaimal,
+                "karman": Karman
+            }[kind](params)
+        except KeyError as er:
+            raise KeyError(f"spectrum {kind} unknown (only kaimal, karman)")
         
-    def compute(self, N, Ts):
+        self.freq, self.array = self._compute(params.n_samples, params.sample_time)
+
+    def symetrized(self, i):
+        return self.array[:, i] + self.array[:, i][::-1]
+        
+    def _compute(self, N, Ts):
         FMax = 1./ Ts
         freq = np.arange(0, FMax, FMax/N)
         array = np.zeros(shape=(N, 3))
-        array[:, 0] = self.kernel(0, freq)
-        array[:, 1] = self.kernel(1, freq)
-        array[:, 2] = self.kernel(2, freq)
+        for i in range(3):
+            array[:, i] = self.kernel(i, freq)
 
         return freq, array 

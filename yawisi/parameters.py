@@ -1,29 +1,50 @@
-
+import configparser
 
 class LiDARSimulationParameters:
 
     def __init__(self, filename):
         #Initialisation
         self.Filename = filename #Fichier d'initialisation
-        self.__parse()
+      
+        self.n_samples = 1000
+        self.sample_time = 0.1
+        self.wind_mean = 10. #Lecture de la vitesse moyenne
+        self.kind = 'karman'
+        self.Lv = 130 #Lecture de la longueur d'onde
+        self.sigma_x = 4. #Lecture de la variance longitudinale
+        self.sigma_y = 2.8 #Lecture de la variance Transversale
+        self.sigma_z = 1.2 #Lecture de la variance longitudinale
+        self.vertical_shear= 0.3 #Lecture du parametre de gradient
+        self.reference_height = 80 #Lecture de la hauteur de reference du champ de vent
+        self.grid_width=100
+        self.grid_height=100
+        self.grid_length=11
 
-    def __parse(self):
-        #Initialisation a partir d'un fichier texte
-        with open(self.Filename,"r") as file: 
-            data=file.readlines() #lecture du fichier
-            print('Simulation Initialized')
-            self.n_samples=[int(s) for s in data[4].split() if s.isdigit()][0] #Nombre d'echantillons
-            self.sample_time=float(data[5].split('\t')[0]) #Periode d'echantillonnnage
-            self.wind_mean=[int(s) for s in data[8].split() if s.isdigit()][0] #Lecture de la vitesse moyenne
-            self.Lv=[int(s) for s in data[9].split() if s.isdigit()][0] #Lecture de la longueur d'onde
-            self.sigma_x=float(data[10].split('\t')[0]) #Lecture de la variance longitudinale
-            self.sigma_y=float(data[11].split('\t')[0]) #Lecture de la variance Transversale
-            self.sigma_z=float(data[12].split('\t')[0]) #Lecture de la variance longitudinale
-            self.vertical_shear=float(data[16].split('\t')[0]) #Lecture du parametre de gradient
-            self.reference_height=float(data[15].split('\t')[0]) #Lecture de la hauteur de reference du champ de vent
-            self.grid_width=float(data[17].split('\t')[0])
-            self.grid_height=float(data[18].split('\t')[0])
-            self.grid_length= int(data[19].split('\t')[0])
+        if filename is not None:
+            self.__parse_ini(filename)
+
+    def __parse_ini(self, filename):
+
+        config = configparser.ConfigParser()
+        config.read(filename)
+        simulation = config['Simulation']
+        self.n_samples = int(simulation.get('n_samples', self.n_samples))
+        self.sample_time=float(simulation.get('sample_time', self.sample_time))
+
+        spectrum = config['Spectrum']
+        self.kind = spectrum.get('kind', self.kind)
+        self.wind_mean= int(spectrum.get('wind_mean', self.wind_mean)) #Lecture de la vitesse moyenne
+        self.Lv=int(spectrum.get('wave_length')) #Lecture de la longueur d'onde
+        self.sigma_x=float(spectrum.get('sigma_x', self.sigma_x))
+        self.sigma_y=float(spectrum.get('sigma_y', self.sigma_y))
+        self.sigma_z=float(spectrum.get('sigma_z', self.sigma_z))
+
+        field = config['Field']
+        self.vertical_shear=float(field.get('vertical_shear', self.vertical_shear))
+        self.reference_height=float(field.get('hub_height', self.reference_height))
+        self.grid_width=float(field.get('grid_width', self.grid_width))
+        self.grid_height=float(field.get('grid_heigth', self.grid_height))
+        self.grid_length= int(field.get('grid_length', self.grid_length))
 
     @property
     def total_time(self):

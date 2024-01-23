@@ -1,7 +1,7 @@
 import numpy as np
 from yawisi.parameters import LiDARSimulationParameters
 from yawisi.spectrum import LiDARSpectrum
-from yawisi.locations import Locations
+from yawisi.locations import Locations, Grid
 from yawisi.kernels import CoherenceKernel
 from yawisi.wind import LiDARWind
 from tqdm import tqdm
@@ -14,7 +14,6 @@ class LiDARWindField:
     def __init__(self, params: LiDARSimulationParameters):
         self.params: LiDARSimulationParameters = params #Def des parametres de simulation pour le Wind Field
         self.coherence_kernel = CoherenceKernel()
-        self.spectrum = LiDARSpectrum(params) #Spectre du signal de vent
         self.locations: Locations = Locations.create("grid", 
                                                   width=self.params.grid_width, 
                                                   height=self.params.grid_height, 
@@ -22,7 +21,31 @@ class LiDARWindField:
                                                   ny=self.params.grid_length
                                                   ) 
         self.wind=[]   #Objets vent contenus dans le champ
-       
+
+    def get_umean(self):
+        assert isinstance(self.locations, Grid), " can only generate for a grid"
+        n_points = len(self.locations)
+        # center of the grid is the location in the middle of the list
+        pt = self.locations.points[n_points // 2, :]
+        print(pt)
+        wind = self.wind[n_points//2]
+        return wind.wind_values[:, 0].mean()
+
+    def get_uvwt(self):
+        """format (3 x ny x nz x nt)"""
+        assert isinstance(self.locations, Grid), " can only generate for a grid"
+
+        grid: Grid = self.locations 
+
+        ny, nz = grid.dims[0], grid.dims[1]
+        nt = self.params.n_samples
+        ts = np.empty((3, ny, nz, nt))
+        for idx, w in enumerate(self.wind):
+            i, j = grid.coords(idx)
+            ts[:, i, j, :] = np.transpose(w.wind_values)
+
+        return ts
+
      
     @property
     def is_initialized(self) -> bool:
@@ -47,7 +70,8 @@ class LiDARWindField:
         N = self.params.n_samples
         n_points = len(self.locations)
 
-        self.spectrum.compute(N=N, Ts=self.params.sample_time)
+        spectrum = LiDARSpectrum(self.params) #Spectre du signal de vent
+      
 
         #Definition des transformation de Fourier des seeds du vent en chaque point
         fft_seed = np.zeros(shape =(n_points, N, 3), dtype=np.complex64)
@@ -73,5 +97,5 @@ class LiDARWindField:
                  0,
                  0   
               ])
-            wind.compute(fft_seed=fft_seed[i_pt, :, :], lidar_spectrum=self.spectrum)
+            wind.compute(fft_seed=fft_seed[i_pt, :, :], spectrum=spectrum)
             self.wind.append(wind)

@@ -12,10 +12,10 @@ def display_spectrum(spectrum: LiDARSpectrum ):
     Cette fonction permet de faire l'affichage du spectre 
     """
 
-    freq, array = spectrum.compute(spectrum.params.n_samples, spectrum.params.total_time)
+    freq, array = spectrum.freq, spectrum.array
 
     fig = plt.figure()
-    fig.suptitle('Spectre du vent', fontsize=20)
+    fig.suptitle(f'Spectre du vent {spectrum.params.kind}', fontsize=20)
     plt.xlabel('Frequence (Hz)', fontsize=18)
     plt.ylabel('Spectre', fontsize=16)
     plt.plot(freq, array[:, 0],label='Wx')
@@ -43,9 +43,9 @@ def display_wind(wind: LiDARWind):
         #print self.WindValues
         #print self.WindValues[0,:]
         fig.suptitle('Vent genere', fontsize=20)
-        ax.plot(time,wind.WindValues[:, 0],label='wx')
-        ax.plot(time,wind.WindValues[:, 1],label='wy')
-        ax.plot(time,wind.WindValues[:, 2],label='wz')
+        ax.plot(time,wind.wind_values[:, 0],label='wx')
+        ax.plot(time,wind.wind_values[:, 1],label='wy')
+        ax.plot(time,wind.wind_values[:, 2],label='wz')
         plt.ylabel('Vent en m/s')
         plt.xlabel("Temps")
         plt.legend()
@@ -59,7 +59,7 @@ def display_points(grid: Grid):
     ax = fig.add_subplot(111)
     ax.set_xlabel('Position transversale')
     ax.set_ylabel('Position Verticale')
-    ax.plot(grid.x_array(), grid.y_array(),'x')
+    ax.plot(grid.y_array(), grid.z_array(),'x')
     ax.grid()
     plt.show()
     
@@ -94,9 +94,10 @@ def display_field(wind_field: LiDARWindField):
         i=0
         while i<len(wind_field.locations):
             pt = wind_field.locations.points[i]
-            ax2.plot(Time,wind_field.wind[i].WindValues[:, 0],label='w_x , point[%s,%s]' % (pt[0],pt[1]))
-            ax2.plot(Time,wind_field.wind[i].WindValues[:, 0],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
-            ax2.plot(Time,wind_field.wind[i].WindValues[:, 1],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )
+            wind : LiDARWind = wind_field.wind[i]
+            ax2.plot(Time, wind.wind_values[:, 0],    label='w_x , point[%s,%s]' % (pt[0],pt[1]))
+            ax2.plot(Time, wind.wind_values[:, 1],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
+            ax2.plot(Time, wind.wind_values[:, 2],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )
             i+=1    
         ax2.set_ylabel('Vent(m/s)')
         ax2.set_xlabel("Temps")
