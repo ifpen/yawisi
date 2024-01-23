@@ -175,6 +175,7 @@ class LiDARSpectrum:
 		file.close() #Fermeture du fichier
 
 	def GenerateSignalFromWind(self,Wind):
+
 		#Cette Fonction permet de recuperer le vent genere a partir d'une seed de vent.
 		Ts=Wind.SimulationParameters.SampleTime #Pertiode d'echantillonage
 		N=Wind.SimulationParameters.NSamples
@@ -196,14 +197,16 @@ class LiDARSpectrum:
 		WindSpectrumX=multiply(fft.fft(Wind.SeedX),Spectrum[0,:]+Spectrum[0,:][::-1])
 		WindSpectrumY=multiply(fft.fft(Wind.SeedY),Spectrum[1,:]+Spectrum[1,:][::-1])
 		WindSpectrumZ=multiply(fft.fft(Wind.SeedZ),Spectrum[2,:]+Spectrum[2,:][::-1])
+		plt.plot(Spectrum[0,:])
+		plt.show()
 		#Affichage
-		#plt.plot(Time,fft.ifft(WindSpectrumX).real+self.WindMean,label='wx')
-		#plt.plot(Time,fft.ifft(WindSpectrumY).real,label='wy')
-		#plt.plot(Time,fft.ifft(WindSpectrumZ).real,label='wz')
-		#plt.ylabel('Vent en m/s')
-		#plt.xlabel("Temps")
-		#plt.legend()
-		#plt.show()
+		plt.plot(Time,fft.ifft(WindSpectrumX).real+self.WindMean,label='wx')
+		plt.plot(Time,fft.ifft(WindSpectrumY).real,label='wy')
+		plt.plot(Time,fft.ifft(WindSpectrumZ).real,label='wz')
+		plt.ylabel('Vent en m/s')
+		plt.xlabel("Temps")
+		plt.legend()
+		plt.show()
 		#renvoie les valeurs de vent
 		return array([fft.ifft(WindSpectrumX).real+self.WindMean,fft.ifft(WindSpectrumY).real,fft.ifft(WindSpectrumZ).real])
 		
@@ -623,7 +626,7 @@ class LiDARMeasure:
 			self.Ponderation[i]=float(30-abs(i-30))
 			sumPond+=float(30-abs(i-30))
 		self.Ponderation=self.Ponderation/sumPond
-		print 'Nouvelle Mesure: Phi=%s,Theta=%s,d=%s' % (MeasureParameters[0],MeasureParameters[1],MeasureParameters[2])
+		print ('Nouvelle Mesure: Phi=%s,Theta=%s,d=%s' % (MeasureParameters[0],MeasureParameters[1],MeasureParameters[2]))
 	def GetPoints(self):
 		return self.GridPoint
 		
@@ -654,9 +657,9 @@ class LiDARSensorSimulation:
 				self.Measure[i].Indices[j]=self.WindField.AddPoints(Points[j,0],Points[j,1])
 		print('---------Mesures LiDAR initialisee--------')
 		print('---------Initialisation de la grille de vent--------')
-		print 'GridWidth=%s' % float(data[17].split('\t')[0])
-		print 'GridHeight=%s' % float(data[18].split('\t')[0])
-		print 'GridLength=%s' % int(data[19].split('\t')[0])
+		print('GridWidth=%s' % float(data[17].split('\t')[0]))
+		print ('GridHeight=%s' % float(data[18].split('\t')[0]))
+		print ('GridLength=%s' % int(data[19].split('\t')[0]))
 		self.WindField.SetGrid(float(data[17].split('\t')[0]),float(data[18].split('\t')[0]),int(data[19].split('\t')[0]))
 		#self.WindField.DisplayPoints()
 		print('---------Grid Initialized--------')
@@ -739,8 +742,8 @@ class LiDARSensorSimulation:
 			fz = interpolate.interp1d(TimeVector,z, kind='linear', axis=-1, copy=True, bounds_error=False, fill_value=0)
 			InterpolatedValuesZ=fz(array(TimeVector)-array([DelayVector[i]]*len(TimeVector)))
 			print(sum(self.Measure[Index].Ponderation[i]))
-			print 'Phi=%s' % cos(float(self.Measure[Index].Phi)*pi/180)
-			print 'Theta=%s' % cos(float(self.Measure[Index].Theta)*pi/180)
+			print('Phi=%s' % cos(float(self.Measure[Index].Phi)*pi/180))
+			print('Theta=%s' % cos(float(self.Measure[Index].Theta)*pi/180))
 			MesureLiDAR=MesureLiDAR+InterpolatedValuesX*self.Measure[Index].Ponderation[i]*cos(float(self.Measure[Index].Phi)*pi/180)
 			MesureLiDAR=MesureLiDAR+InterpolatedValuesY*self.Measure[Index].Ponderation[i]*sin(float(self.Measure[Index].Phi)*pi/180)*cos(float(self.Measure[Index].Theta)*pi/180)
 			MesureLiDAR=MesureLiDAR+InterpolatedValuesZ*self.Measure[Index].Ponderation[i]*sin(float(self.Measure[Index].Phi)*pi/180)*sin(float(self.Measure[Index].Theta)*pi/180)
@@ -753,3 +756,15 @@ class LiDARSensorSimulation:
 		ax.grid()
 		plt.show()	
 		#essai de la fonction d'interpolation
+
+
+if __name__ == "__main__":
+	params = LiDARSimulationParameters(1000, 0.1)
+	params.InitFromText("./data/Simulationcourte.li")
+	spectrum = LiDARSpectrum()
+	
+	spectrum.InitSpectrumFromText("./data/Simulationcourte.li")
+	spectrum.DisplaySpectrum()
+	wind = LiDARWind(params)
+	wind.SetWind(spectrum)
+	wind.DisplayWind()

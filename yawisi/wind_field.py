@@ -1,9 +1,9 @@
 import numpy as np
-from pywisim.parameters import LiDARSimulationParameters
-from pywisim.spectrum import LiDARSpectrum
-from pywisim.locations import Locations
-from pywisim.kernels import CoherenceKernel
-from pywisim.wind import LiDARWind
+from yawisi.parameters import LiDARSimulationParameters
+from yawisi.spectrum import LiDARSpectrum
+from yawisi.locations import Locations
+from yawisi.kernels import CoherenceKernel
+from yawisi.wind import LiDARWind
 from tqdm import tqdm
 
 class LiDARWindField:
@@ -13,24 +13,24 @@ class LiDARWindField:
     """
     def __init__(self, params: LiDARSimulationParameters):
         self.params: LiDARSimulationParameters = params #Def des parametres de simulation pour le Wind Field
-        
         self.coherence_kernel = CoherenceKernel()
-        self.Spectrum = LiDARSpectrum(params) #Spectre du signal de vent
-       
-        
-        self.Points: Locations = Locations.create(params) #Points du champ de vent
-        self.Wind=[]   #Objets vent contenus dans le champ
+        self.spectrum = LiDARSpectrum(params) #Spectre du signal de vent
+        self.locations: Locations = Locations.create("grid", 
+                                                  width=self.params.grid_width, 
+                                                  height=self.params.grid_height, 
+                                                  nx=self.params.grid_length, 
+                                                  ny=self.params.grid_length
+                                                  ) 
+        self.wind=[]   #Objets vent contenus dans le champ
        
      
-        self.WindValuesInitialized=0 # Flag pour l'initialisation des valeurs de vent
-
     @property
     def is_initialized(self) -> bool:
-        return len(self.Wind) > 0
+        return len(self.wind) > 0
     
     def get_coherence_function(self):
-        N=self.params.NSamples
-        Ts=self.params.SampleTime
+        N=self.params.n_samples
+        Ts=self.params.sample_time
 
         freq = np.arange(0, 1/Ts, 1/(Ts*N))
         coherence_function = np.zeros(shape=(N, ))
@@ -39,13 +39,15 @@ class LiDARWindField:
         coherence_function = np.pad(coherence_function[:N//2], [0, N//2], mode='reflect')
         return freq, coherence_function
     
-
+    def _get_coherence_matrix(self, factor, distance_matrix):
+        return np.exp(-factor*distance_matrix)
+    
     def compute(self):
 
-        N = self.params.NSamples
-        n_points = len(self.Points)
+        N = self.params.n_samples
+        n_points = len(self.locations)
 
-        self.Spectrum.compute(Npts=N, )
+        self.spectrum.compute(N=N, Ts=self.params.sample_time)
 
         #Definition des transformation de Fourier des seeds du vent en chaque point
         fft_seed = np.zeros(shape =(n_points, N, 3), dtype=np.complex64)
@@ -54,22 +56,22 @@ class LiDARWindField:
             
             #Multiplication par la matrice de coherence
         
-        distance_matrix = self.Points.get_distance_matrix() # store a distance matrix 
+        distance_matrix = self.locations.get_distance_matrix() # store a distance matrix 
         _, coherence_function = self.get_coherence_function()
         for i in tqdm(range(N)):
-            coherence_matrix = np.exp(-coherence_function[i]*distance_matrix)
+            coherence_matrix = self._get_coherence_matrix(coherence_function[i], distance_matrix)
             L = np.linalg.cholesky(coherence_matrix)
             fft_seed[:, i, :] = np.dot(L, fft_seed[:, i, :])  
 
       
         for i_pt in range(n_points):
-            pt = self.Points.points[i_pt]
+            pt = self.locations.points[i_pt]
             wind = LiDARWind(self.params)
             wind.wind_mean =  np.array(
               [
-                 self.params.WindMean*((self.params.ReferenceHeight+pt[1])/self.params.ReferenceHeight)**(self.params.VerticalShearParameter),
+                 self.params.wind_mean*((self.params.reference_height+pt[1])/self.params.reference_height)**(self.params.vertical_shear),
                  0,
                  0   
               ])
-            wind.compute(fft_seed=fft_seed[i_pt, :, :], lidar_spectrum=self.Spectrum)
-            self.Wind.append(wind)
+            wind.compute(fft_seed=fft_seed[i_pt, :, :], lidar_spectrum=self.spectrum)
+            self.wind.append(wind)

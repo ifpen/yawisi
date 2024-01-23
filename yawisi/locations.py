@@ -1,12 +1,17 @@
 from scipy.spatial.distance import cdist
 import numpy as np
-from pywisim.parameters import LiDARSimulationParameters
+from yawisi.parameters import LiDARSimulationParameters
 
 class Locations:
 
     @staticmethod
-    def create(params: LiDARSimulationParameters):
-        return Grid(params.GridWidth, params.GridHeight, int(params.GridLength), int(params.GridLength))
+    def create(kind: str, **kwargs):
+        if kind == "grid":
+            return Grid(**kwargs)
+        elif kind == "points":
+            return Points()
+        else:
+            raise ValueError(f"kind {kind} is not grid/points")
 
     def __init__(self) -> None:
         self.points = None
@@ -34,28 +39,10 @@ class Points(Locations):
         super().__init__()
 
 
-    def AddPoints(self,Y,Z):
-        # Cette fonction permet d'ajouter des points au champ. Cette fonction est majeure, puisqu'elle permet 
-        # de definir les points pour lequels le vent va etre genere.
-        #TEST de l'existence du point qu'on souhaite ajouter.
-        ii=0
-        flag=0
-        while ii<len(self.Points):
-            if ((float(Y)-self.Points[ii][0])**2+(float(Z)-self.Points[ii][1])**2)**(1./2)<=0.01:
-                #print('Point (%s,%s) existing @ indice %s' %(Y,Z,ii))
-                flag=1
-                break
-            else:
-                ii+=1
-        # SI ce point n'est pas detecte, alors on ajout le point en fin de liste
-        if not flag==1:
-            self.Points.append([float(Y),float(Z)])
-            self.Wind.append(LiDARWind(self.params))
-            self.WindValuesInitialized=0
-        return ii #renvoi de l'indice, pour la connaissance dans le champ de vent du point correspondant
-        #print(self.Points)
+    def add_points(self, pts: list):
+        self.points = np.array(pts)
         
-
+    
 
 class Grid(Locations):
 

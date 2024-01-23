@@ -1,7 +1,7 @@
 import numpy as np
-
-from pywisim.parameters import LiDARSimulationParameters
-from pywisim.spectrum import LiDARSpectrum
+import matplotlib.pyplot as plt
+from yawisi.parameters import LiDARSimulationParameters
+from yawisi.spectrum import LiDARSpectrum
 
 
 class LiDARWind:
@@ -23,8 +23,8 @@ class LiDARWind:
     def __init__(self,params: LiDARSimulationParameters):
         #initialisation des seeds a  0 et du vent a 0
         self.params = params
-        self.wind_mean = np.array([self.params.WindMean, 0, 0])
-        self.WindValues = np.zeros(shape=(params.NSamples, 3))
+        self.wind_mean = np.array([self.params.wind_mean, 0, 0])
+        self.WindValues = np.zeros(shape=(params.n_samples, 3))
         
     def AddGust(self,Gust,GustTime):
         #cette fonction permet d'ajouter une gust sur la composante longitudinale
@@ -42,14 +42,14 @@ class LiDARWind:
 
      
     def compute(self, fft_seed=None, lidar_spectrum=None):
-        Ts=self.params.SampleTime #Pertiode d'echantillonage
-        N=self.params.NSamples
+        Ts=self.params.sample_time #Pertiode d'echantillonage
+        N=self.params.n_samples
 
         # Création d'un spectre si aucun n'est donné.
         if lidar_spectrum is None:
             lidar_spectrum = LiDARSpectrum(self.params)
         
-        _, spectrum = lidar_spectrum.compute(N, Ts*N)
+        _, spectrum = lidar_spectrum.compute(N, Ts)
 
         #initialisation des seeds si aucune n'est donnée en paramètre.
         if fft_seed is None:
@@ -62,8 +62,7 @@ class LiDARWind:
             wind_spectrum = np.multiply(
                 fft_seed[:, i],
                 spectrum[:, i]+spectrum[:, i][::-1]
-                ) 
-            
+                )  
             self.WindValues[:, i] = np.fft.ifft(wind_spectrum).real + self.wind_mean[i]
             
 

@@ -1,6 +1,6 @@
 import os
 import unittest
-from pywisim.parameters import LiDARSimulationParameters
+from yawisi.parameters import LiDARSimulationParameters
 class TestSimulationParameters(unittest.TestCase):
 
     def __init__(self, methodName: str = "runTest") -> None:

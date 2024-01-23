@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pywisim.spectrum import LiDARSpectrum
-from pywisim.wind_field import LiDARWindField
-from pywisim.locations import Grid
-from pywisim.wind import LiDARWind
+from yawisi.spectrum import LiDARSpectrum
+from yawisi.wind_field import LiDARWindField
+from yawisi.locations import Grid
+from yawisi.wind import LiDARWind
 
 
 def display_spectrum(spectrum: LiDARSpectrum ):
@@ -12,7 +12,7 @@ def display_spectrum(spectrum: LiDARSpectrum ):
     Cette fonction permet de faire l'affichage du spectre 
     """
 
-    freq, array = spectrum.compute()
+    freq, array = spectrum.compute(spectrum.params.n_samples, spectrum.params.total_time)
 
     fig = plt.figure()
     fig.suptitle('Spectre du vent', fontsize=20)
@@ -36,7 +36,7 @@ def display_wind(wind: LiDARWind):
         #Cette fonction permet d'afficher le signal de vent contenu dans l'objet.
         # Si le vent n'a pas ete initialise, on visualise 0 pour tous les echantillons
        
-        time = np.arange(start=0, stop=wind.params.total_time, step=wind.params.SampleTime)
+        time = np.arange(start=0, stop=wind.params.total_time, step=wind.params.sample_time)
         #affichage des trois composantes
         fig=plt.figure()
         ax = fig.add_subplot(111)
@@ -69,13 +69,13 @@ def display_field(wind_field: LiDARWindField):
     # des points de generation du vent
     print('_______________Wind Field Display___________________________________')
     print('Simulation Parameters:')
-    print('Samples Numbers: %s' % wind_field.params.NSamples)
-    print('SampleTime: %s' % wind_field.params.SampleTime)
+    print('Samples Numbers: %s' % wind_field.params.n_samples)
+    print('SampleTime: %s' % wind_field.params.sample_time)
     #Affichage des points dans le fenetre de commande,
     #display des points dans une figure
     print('WindField Points:')
-    for i in range(len(wind_field.Points)):
-        pt = wind_field.Points.points[i]
+    for i in range(len(wind_field.locations)):
+        pt = wind_field.locations.points[i]
         print('Point %s : Y=%s, Z=%s' % (i,pt[0],pt[1]))
         
     fig=plt.figure()
@@ -88,15 +88,15 @@ def display_field(wind_field: LiDARWindField):
         Time=[]
         ii=0
         ax2 = fig.add_subplot(111)
-        while ii<wind_field.params.NSamples:
-            Time.append(float(ii)*wind_field.params.SampleTime)
+        while ii<wind_field.params.n_samples:
+            Time.append(float(ii)*wind_field.params.sample_time)
             ii+=1
         i=0
-        while i<len(wind_field.Points):
-            pt = wind_field.Points.points[i]
-            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 0],label='w_x , point[%s,%s]' % (pt[0],pt[1]))
-            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 0],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
-            ax2.plot(Time,wind_field.Wind[i].WindValues[:, 1],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )
+        while i<len(wind_field.locations):
+            pt = wind_field.locations.points[i]
+            ax2.plot(Time,wind_field.wind[i].WindValues[:, 0],label='w_x , point[%s,%s]' % (pt[0],pt[1]))
+            ax2.plot(Time,wind_field.wind[i].WindValues[:, 0],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
+            ax2.plot(Time,wind_field.wind[i].WindValues[:, 1],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )
             i+=1    
         ax2.set_ylabel('Vent(m/s)')
         ax2.set_xlabel("Temps")

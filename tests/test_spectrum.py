@@ -1,8 +1,8 @@
 import os
 import unittest
-from pywisim.parameters import LiDARSimulationParameters
-from pywisim.spectrum import LiDARSpectrum
-from pywisim.display import display_spectrum
+from yawisi.parameters import LiDARSimulationParameters
+from yawisi.spectrum import LiDARSpectrum
+from yawisi.display import display_spectrum
 
 
 class TestSpectrum(unittest.TestCase):
@@ -14,7 +14,11 @@ class TestSpectrum(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), "../data", "Simulationcourte.li")
 
         params = LiDARSimulationParameters(filename)
+        params.n_samples = 1000
+        params.sample_time = 0.001
         spectrum = LiDARSpectrum(params)
+      
+
 
         display_spectrum(spectrum)
 
