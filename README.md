@@ -1,7 +1,6 @@
 # YaWISI : Yet Another WInd SImulator
 
-[![License](https://img.shields.io/badge/license-MIT-white)](
-    https://stringfixer.com/fr/MIT_license)
+[![License](https://img.shields.io/badge/license-MIT-white)](LICENSE)
 
 ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
 
@@ -17,7 +16,7 @@ Author: [github@zwergon](https://github.com/zwergon)
 
 Copyright © 2022 Jean-François Lecomte
 
-MIT License ([see here](LICENSE.md))
+MIT License ([see here](LICENSE))
 
 ---
 
