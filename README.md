@@ -10,11 +10,11 @@ A quite simple wind simulator.
 
 ---
 
-Date: 2023-01-23
+Date: 2024-01-23
 
 Author: [github@zwergon](https://github.com/zwergon)
 
-Copyright © 2022 Jean-François Lecomte
+Copyright © 2024 Jean-François Lecomte
 
 MIT License ([see here](LICENSE))
 
