@@ -1,9 +1,9 @@
 import math
-from yawisi.parameters import LiDARSimulationParameters
+from yawisi.parameters import SimulationParameters
 
 
 class Kernel:
-	def __init__(self, params: LiDARSimulationParameters):
+	def __init__(self, params: SimulationParameters):
 		self.Kv = [
 			0.475*(params.sigma_x**2)*params.Lv/params.wind_mean,
 			0.475*(params.sigma_y**2)*params.Lv/params.wind_mean,
@@ -16,7 +16,7 @@ class Kernel:
 
 
 class Kaimal(Kernel):
-	def __init__(self, params: LiDARSimulationParameters):
+	def __init__(self, params: SimulationParameters):
 		super().__init__(params)
 
 	def __call__(self, i_sigma, freq, *args, **kwds):		
@@ -24,7 +24,7 @@ class Kaimal(Kernel):
 	
 
 class Karman(Kernel):
-	def __init__(self, params: LiDARSimulationParameters):
+	def __init__(self, params: SimulationParameters):
 		super().__init__(params)
 
 	def __call__(self, i_sigma, freq, *args, **kwds):

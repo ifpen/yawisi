@@ -1,11 +1,11 @@
 import numpy as np
 
-from yawisi.parameters import LiDARSimulationParameters
+from yawisi.parameters import SimulationParameters
 from yawisi.kernels import Kaimal, Karman
 
-class LiDARSpectrum:
+class Spectrum:
 
-    def __init__(self, params:LiDARSimulationParameters):
+    def __init__(self, params:SimulationParameters):
         self.params = params
         try:
             kind = self.params.kind.lower()

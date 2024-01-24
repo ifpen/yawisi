@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from yawisi.spectrum import LiDARSpectrum
-from yawisi.wind_field import LiDARWindField
+from yawisi.spectrum import Spectrum
+from yawisi.wind_field import WindField
 from yawisi.locations import Grid
-from yawisi.wind import LiDARWind
+from yawisi.wind import Wind
 
 
-def display_spectrum(spectrum: LiDARSpectrum ):
+def display_spectrum(spectrum: Spectrum ):
     """
     Cette fonction permet de faire l'affichage du spectre 
     """
@@ -32,7 +32,7 @@ def display_coherence_function(freq, coherence_function):
     plt.show()
 
   
-def display_wind(wind: LiDARWind):
+def display_wind(wind: Wind):
         #Cette fonction permet d'afficher le signal de vent contenu dans l'objet.
         # Si le vent n'a pas ete initialise, on visualise 0 pour tous les echantillons
        
@@ -64,7 +64,7 @@ def display_points(grid: Grid):
     plt.show()
     
 
-def display_field(wind_field: LiDARWindField):
+def display_field(wind_field: WindField):
     # Fonction pour Affichage des parametres du champ et
     # des points de generation du vent
     print('_______________Wind Field Display___________________________________')
@@ -94,7 +94,7 @@ def display_field(wind_field: LiDARWindField):
         i=0
         while i<len(wind_field.locations):
             pt = wind_field.locations.points[i]
-            wind : LiDARWind = wind_field.wind[i]
+            wind : Wind = wind_field.wind[i]
             ax2.plot(Time, wind.wind_values[:, 0],    label='w_x , point[%s,%s]' % (pt[0],pt[1]))
             ax2.plot(Time, wind.wind_values[:, 1],'-',label='w_y , point[%s,%s]' % (pt[0],pt[1]) )
             ax2.plot(Time, wind.wind_values[:, 2],'.',label='w_z , point[%s,%s]' % (pt[0],pt[1]) )

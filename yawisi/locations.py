@@ -1,6 +1,6 @@
 from scipy.spatial.distance import cdist
 import numpy as np
-from yawisi.parameters import LiDARSimulationParameters
+from yawisi.parameters import SimulationParameters
 
 class Locations:
 

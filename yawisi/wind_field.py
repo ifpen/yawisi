@@ -1,18 +1,18 @@
 import numpy as np
-from yawisi.parameters import LiDARSimulationParameters
-from yawisi.spectrum import LiDARSpectrum
+from yawisi.parameters import SimulationParameters
+from yawisi.spectrum import Spectrum
 from yawisi.locations import Locations, Grid
 from yawisi.kernels import CoherenceKernel
-from yawisi.wind import LiDARWind
+from yawisi.wind import Wind
 from tqdm import tqdm
 
-class LiDARWindField:
+class WindField:
     """
     cette classe permet de definir un champ de vent contenant un certain nombre de points,
     et permet de generer le vecteur de vent
     """
-    def __init__(self, params: LiDARSimulationParameters):
-        self.params: LiDARSimulationParameters = params #Def des parametres de simulation pour le Wind Field
+    def __init__(self, params: SimulationParameters):
+        self.params: SimulationParameters = params #Def des parametres de simulation pour le Wind Field
         self.coherence_kernel = CoherenceKernel()
         self.locations: Locations = Locations.create("grid", 
                                                   width=self.params.grid_width, 
@@ -70,13 +70,13 @@ class LiDARWindField:
         N = self.params.n_samples
         n_points = len(self.locations)
 
-        spectrum = LiDARSpectrum(self.params) #Spectre du signal de vent
+        spectrum = Spectrum(self.params) #Spectre du signal de vent
       
 
         #Definition des transformation de Fourier des seeds du vent en chaque point
         fft_seed = np.zeros(shape =(n_points, N, 3), dtype=np.complex64)
         for i_pt in range(n_points):
-            fft_seed[i_pt, :, :] = LiDARWind.get_initial_fftseed(N)
+            fft_seed[i_pt, :, :] = Wind.get_initial_fftseed(N)
             
             #Multiplication par la matrice de coherence
         
@@ -90,7 +90,7 @@ class LiDARWindField:
       
         for i_pt in range(n_points):
             pt = self.locations.points[i_pt]
-            wind = LiDARWind(self.params)
+            wind = Wind(self.params)
             wind.wind_mean =  np.array(
               [
                  self.params.wind_mean*((self.params.reference_height+pt[1])/self.params.reference_height)**(self.params.vertical_shear),

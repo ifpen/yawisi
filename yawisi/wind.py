@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from yawisi.parameters import LiDARSimulationParameters
-from yawisi.spectrum import LiDARSpectrum
+from yawisi.parameters import SimulationParameters
+from yawisi.spectrum import Spectrum
 
 
-class LiDARWind:
+class Wind:
     """
     Cette classe permet de definir un objet Vent, contenant une seed (pour chaque composante)
     Elle permet egalement de contenir les valeurs du vent, qui peuvent etre initialisee 
@@ -20,7 +20,7 @@ class LiDARWind:
             fft_seed[:, i]= np.fft.fft(seed - np.mean(seed))
         return fft_seed
     
-    def __init__(self,params: LiDARSimulationParameters):
+    def __init__(self,params: SimulationParameters):
         #initialisation des seeds a  0 et du vent a 0
         self.params = params
         self.wind_mean = np.array([self.params.wind_mean, 0, 0])
@@ -46,11 +46,11 @@ class LiDARWind:
 
         # Création d'un spectre si aucun n'est donné.
         if spectrum is None:
-            spectrum = LiDARSpectrum(self.params)
+            spectrum = Spectrum(self.params)
 
         #initialisation des seeds si aucune n'est donnée en paramètre.
         if fft_seed is None:
-            fft_seed = LiDARWind.get_initial_fftseed(N)
+            fft_seed = Wind.get_initial_fftseed(N)
             
         # Multiplication du spectre de la seed, par le spectre (discret) du vent
         # Le spectre est defini comme le spectre original auquel s'ajoute son symetrique

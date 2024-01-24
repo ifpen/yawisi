@@ -1,7 +1,7 @@
 import os
 import unittest
-from yawisi.parameters import LiDARSimulationParameters
-from yawisi.wind_field import LiDARWindField
+from yawisi.parameters import SimulationParameters
+from yawisi.wind_field import WindField
 from yawisi.locations import Locations
 from yawisi.display import display_coherence_function, display_field
 from yawisi.io import to_bts
@@ -14,11 +14,11 @@ class TestWindField(unittest.TestCase):
 
     def test_points_wind_field(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
-        params = LiDARSimulationParameters(filename)
+        params = SimulationParameters(filename)
         params.n_samples = 2000
         params.sample_time = 0.1
 
-        wind_field = LiDARWindField(params)
+        wind_field = WindField(params)
         pts = [
             (0, 0),
             (0, 1),
@@ -37,11 +37,11 @@ class TestWindField(unittest.TestCase):
 
     def test_grid_field(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
-        params = LiDARSimulationParameters(filename)
+        params = SimulationParameters(filename)
         params.n_samples = 2000
         params.sample_time = 0.1
 
-        wind_field = LiDARWindField(params)
+        wind_field = WindField(params)
         wind_field.compute()
         #display_field(wind_field=wind_field)
 
@@ -57,11 +57,11 @@ class TestWindField(unittest.TestCase):
     def test_to_bts(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
         
-        params = LiDARSimulationParameters(filename)
+        params = SimulationParameters(filename)
         params.n_samples = 2000
         params.sample_time = 0.1
 
-        wind_field = LiDARWindField(params)
+        wind_field = WindField(params)
         wind_field.compute()
         to_bts(wind_field=wind_field, path="./test.bts")
 

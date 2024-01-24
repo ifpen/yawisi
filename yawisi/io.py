@@ -3,13 +3,13 @@ import numpy as np
 from struct import pack, unpack
 import time
 
-from yawisi.wind_field import LiDARWindField
+from yawisi.wind_field import WindField
 from yawisi import __version__
 
 _TS_BIN_FMT = '<h4l12fl'  # TurbSim binary format
 
 
-def to_bts(wind_field: LiDARWindField, path, uzhub=None, periodic=True):
+def to_bts(wind_field: WindField, path, uzhub=None, periodic=True):
     """yawisi wind_field to TurbSim-style binary file
     Code modified based on `turbsim` in PyTurbSim:
         https://github.com/lkilcher/pyTurbSim/blob/master/pyts/io/write.py

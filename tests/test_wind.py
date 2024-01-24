@@ -1,7 +1,7 @@
 import os
 import unittest
-from yawisi.parameters import LiDARSimulationParameters
-from yawisi.wind import LiDARWind
+from yawisi.parameters import SimulationParameters
+from yawisi.wind import Wind
 from yawisi.display import display_wind
 import matplotlib.pyplot as plt
 
@@ -12,12 +12,12 @@ class TestWind(unittest.TestCase):
 
     def test_wind(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
-        params = LiDARSimulationParameters(filename)
+        params = SimulationParameters(filename)
         params.n_samples = 2000
         params.sample_time = .1
         print(params)
 
-        wind = LiDARWind(params)
+        wind = Wind(params)
         wind.compute()
 
         display_wind(wind)

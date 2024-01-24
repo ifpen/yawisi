@@ -1,7 +1,7 @@
 import os
 import unittest
-from yawisi.parameters import LiDARSimulationParameters
-from yawisi.spectrum import LiDARSpectrum
+from yawisi.parameters import SimulationParameters
+from yawisi.spectrum import Spectrum
 from yawisi.display import display_spectrum
 
 
@@ -13,10 +13,10 @@ class TestSpectrum(unittest.TestCase):
     def test_params(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
 
-        params = LiDARSimulationParameters(filename)
+        params = SimulationParameters(filename)
         params.n_samples = 1000
         params.sample_time = 1
-        spectrum = LiDARSpectrum(params)
+        spectrum = Spectrum(params)
       
         display_spectrum(spectrum)
 

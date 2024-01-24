@@ -1,6 +1,6 @@
 import configparser
 
-class LiDARSimulationParameters:
+class SimulationParameters:
 
     def __init__(self, filename):
         #Initialisation
