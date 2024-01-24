@@ -1,6 +1,6 @@
 # YaWISI : Yet Another WInd SImulator
 
-[![License](https://img.shields.io/badge/license-MIT-white)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
 
