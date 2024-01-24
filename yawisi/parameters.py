@@ -57,7 +57,7 @@ class SimulationParameters:
     def __str__(self) -> str:
         msg = f'Number of Samples Initialized @ {self.n_samples}\n'
         msg += f'Sample Time Initialized @ {self.sample_time}\n'
-        msg = f'Wind Mean Speed Initialized @ {self.wind_mean}\n'
+        msg += f'Wind Mean Speed Initialized @ {self.wind_mean}\n'
         msg +=f'Wave length Initialized @ {self.Lv}\n'
         msg +=f'Longitudinal Component Variance initialized @ {self.sigma_x}\n'
         msg +=f'Transversal Component Variance initialized @  {self.sigma_y}\n'

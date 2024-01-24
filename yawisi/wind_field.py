@@ -12,6 +12,7 @@ class WindField:
     et permet de generer le vecteur de vent
     """
     def __init__(self, params: SimulationParameters):
+        self.info = None
         self.params: SimulationParameters = params #Def des parametres de simulation pour le Wind Field
         self.coherence_kernel = CoherenceKernel()
         self.locations: Locations = Locations.create("grid", 
@@ -27,25 +28,23 @@ class WindField:
         n_points = len(self.locations)
         # center of the grid is the location in the middle of the list
         pt = self.locations.points[n_points // 2, :]
-        print(pt)
         wind = self.wind[n_points//2]
         return wind.wind_values[:, 0].mean()
 
     def get_uvwt(self):
-        """format (3 x ny x nz x nt)"""
+        """format (3 x nt x ny x nz )"""
         assert isinstance(self.locations, Grid), " can only generate for a grid"
 
         grid: Grid = self.locations 
 
         ny, nz = grid.dims[0], grid.dims[1]
         nt = self.params.n_samples
-        ts = np.empty((3, ny, nz, nt))
+        ts = np.empty((3, nt, ny, nz))
         for idx, w in enumerate(self.wind):
             i, j = grid.coords(idx)
-            ts[:, i, j, :] = np.transpose(w.wind_values)
+            ts[:, :, i, j] = np.transpose(w.wind_values)
 
         return ts
-
      
     @property
     def is_initialized(self) -> bool:
@@ -72,7 +71,6 @@ class WindField:
 
         spectrum = Spectrum(self.params) #Spectre du signal de vent
       
-
         #Definition des transformation de Fourier des seeds du vent en chaque point
         fft_seed = np.zeros(shape =(n_points, N, 3), dtype=np.complex64)
         for i_pt in range(n_points):
@@ -99,3 +97,40 @@ class WindField:
               ])
             wind.compute(fft_seed=fft_seed[i_pt, :, :], spectrum=spectrum)
             self.wind.append(wind)
+
+    def __repr__(self):
+        s='<{} object> with keys:\n'.format(type(self).__name__)
+
+         # calculate intermediate parameters
+        y = np.sort(np.unique(self.locations.y_array()))
+        z = np.sort(np.unique(self.locations.z_array()))
+        ny = y.size  # no. of y points in grid
+        nz = z.size  # no. of z points in grif
+        nt = self.params.n_samples # no. of time steps
+        if y.size == 1:
+            dy = 0
+        else:
+            dy = np.mean(y[1:] - y[:-1])  # hopefully will reduce possible errors
+        if z.size == 1:
+            dz = 0
+        else:
+            dz = np.mean(z[1:] - z[:-1])  # hopefully will reduce possible errors
+        dt = self.params.sample_time  # time step
+        zhub = z[z.size // 2]  # halfway up
+        uhub = self.get_umean()  # mean of center of grid
+
+        s+=' - info: {}\n'.format(self.info)
+        s+=' - z: [{} ... {}],  dz: {}, n: {} \n'.format(z[0], z[-1], dz, nz)
+        s+=' - y: [{} ... {}],  dy: {}, n: {} \n'.format(y[0], y[-1], dy, ny)
+        s+=' - t: [{} ... {}],  dt: {}, n: {} \n'.format(0, dt*nt, dt, nt)
+        s+=' - uhub: ({}) zhub ({})\n'.format(uhub, zhub)
+        
+        if isinstance(self.locations, Grid):
+            uvwt = self.get_uvwt()
+            s+=' - u: ({} x {} x {} x {}) \n'.format(*(uvwt.shape))
+            ux, uy, uz = uvwt[0, :, :, :], uvwt[1, :, :, :], uvwt[2, :, :, :]
+            s+='    ux: min: {}, max: {}, mean: {} \n'.format(np.min(ux), np.max(ux), np.mean(ux))
+            s+='    uy: min: {}, max: {}, mean: {} \n'.format(np.min(uy), np.max(uy), np.mean(uy))
+            s+='    uz: min: {}, max: {}, mean: {} \n'.format(np.min(uz), np.max(uz), np.mean(uz))
+
+        return s

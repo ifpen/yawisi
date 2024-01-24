@@ -4,7 +4,7 @@ from yawisi.parameters import SimulationParameters
 from yawisi.wind_field import WindField
 from yawisi.locations import Locations
 from yawisi.display import display_coherence_function, display_field
-from yawisi.io import to_bts
+from yawisi.io import to_bts, from_bts
 import matplotlib.pyplot as plt
 
 class TestWindField(unittest.TestCase):
@@ -48,7 +48,7 @@ class TestWindField(unittest.TestCase):
         ts = wind_field.get_uvwt()
         print(ts.shape)
         for i in range(3):
-            plt.plot(ts[i, 6 , 6, :])
+            plt.plot(ts[i, :, 6, 6])
         plt.show()
 
         uhub = wind_field.get_umean()
@@ -56,6 +56,7 @@ class TestWindField(unittest.TestCase):
 
     def test_to_bts(self):
         filename = os.path.join(os.path.dirname(__file__), "config.ini")
+        btsfile = os.path.join(os.path.dirname(__file__), "./data", "test_to_bts.bts")
         
         params = SimulationParameters(filename)
         params.n_samples = 2000
@@ -63,7 +64,18 @@ class TestWindField(unittest.TestCase):
 
         wind_field = WindField(params)
         wind_field.compute()
-        to_bts(wind_field=wind_field, path="./test.bts")
+        to_bts(wind_field=wind_field, path=btsfile)
+
+    def test_from_bts(self):
+        btsfile = os.path.join(os.path.dirname(__file__), "./data", "test_from_bts.bts")
+        wind_field = from_bts(btsfile)
+        print(wind_field)
+        #ts = wind_field.get_uvwt()
+        # print(ts.shape)
+        # for i in range(3):
+        #     plt.plot(ts[i, :, 6, 6])
+        # plt.show()
+
 
 
 if __name__ == "__main__":
