@@ -16,7 +16,7 @@ Author: [github@zwergon](https://github.com/zwergon)
 
 Copyright © 2024 Jean-François Lecomte
 
-MIT License ([see here](LICENSE))
+Apache-2.0 license ([see here](LICENSE))
 
 ---
 
