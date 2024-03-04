@@ -1,70 +1,83 @@
 import configparser
 
-class SimulationParameters:
 
+class SimulationParameters:
     def __init__(self, filename):
-        #Initialisation
-        self.Filename = filename #Fichier d'initialisation
-      
+        # Initialisation
+        self.Filename = filename  # Fichier d'initialisation
+
         self.n_samples = 1000
         self.sample_time = 0.1
-        self.wind_mean = 10. #Lecture de la vitesse moyenne
-        self.kind = 'karman'
-        self.Lv = 130 #Lecture de la longueur d'onde
-        self.sigma_x = 4. #Lecture de la variance longitudinale
-        self.sigma_y = 2.8 #Lecture de la variance Transversale
-        self.sigma_z = 1.2 #Lecture de la variance longitudinale
-        self.vertical_shear= 0.3 #Lecture du parametre de gradient
-        self.reference_height = 80 #Lecture de la hauteur de reference du champ de vent
-        self.grid_width=100
-        self.grid_height=100
-        self.grid_length=11
+        self.wind_mean = 10.0  # Lecture de la vitesse moyenne
+        self.kind = "karman"
+        self.scale_1 = 170  # turbulence length scale for longitudinal component
+        self.scale_2 = 100  # turbulence length scale for transversal component
+        self.scale_3 = 35  # turbulence length scale for vertical component
+        self.sigma_1 = 2.6  # std of wind fluctuation of the longitudinal component
+        self.sigma_2 = 2.2  # std of wind fluctuation of the transversal Component
+        self.sigma_3 = 1.56  # std of wind fluctuation of the vertical component
+        self.vertical_shear = 0.3  # Lecture du parametre de gradient
+        self.reference_height = (
+            80  # Lecture de la hauteur de reference du champ de vent
+        )
+        self.grid_width = 100
+        self.grid_height = 100
+        self.grid_length = 11
 
         if filename is not None:
             self.__parse_ini(filename)
 
     def __parse_ini(self, filename):
-
         config = configparser.ConfigParser()
         config.read(filename)
-        simulation = config['Simulation']
-        self.n_samples = int(simulation.get('n_samples', self.n_samples))
-        self.sample_time=float(simulation.get('sample_time', self.sample_time))
+        simulation = config["Simulation"]
+        self.n_samples = int(simulation.get("n_samples", self.n_samples))
+        self.sample_time = float(simulation.get("sample_time", self.sample_time))
 
-        spectrum = config['Spectrum']
-        self.kind = spectrum.get('kind', self.kind)
-        self.wind_mean= int(spectrum.get('wind_mean', self.wind_mean)) #Lecture de la vitesse moyenne
-        self.Lv=int(spectrum.get('wave_length')) #Lecture de la longueur d'onde
-        self.sigma_x=float(spectrum.get('sigma_x', self.sigma_x))
-        self.sigma_y=float(spectrum.get('sigma_y', self.sigma_y))
-        self.sigma_z=float(spectrum.get('sigma_z', self.sigma_z))
+        spectrum = config["Spectrum"]
+        self.kind = spectrum.get("kind", self.kind)
+        self.wind_mean = int(
+            spectrum.get("wind_mean", self.wind_mean)
+        )  # Lecture de la vitesse moyenne
+        self.scale_1 = float(spectrum.get("scale_1", self.scale_1))
+        self.scale_2 = float(spectrum.get("scale_2", self.scale_2))
+        self.scale_3 = float(spectrum.get("scale_3", self.scale_3))
+        self.sigma_1 = float(spectrum.get("sigma_1", self.sigma_1))
+        self.sigma_2 = float(spectrum.get("sigma_2", self.sigma_2))
+        self.sigma_3 = float(spectrum.get("sigma_3", self.sigma_3))
 
-        field = config['Field']
-        self.vertical_shear=float(field.get('vertical_shear', self.vertical_shear))
-        self.reference_height=float(field.get('hub_height', self.reference_height))
-        self.grid_width=float(field.get('grid_width', self.grid_width))
-        self.grid_height=float(field.get('grid_heigth', self.grid_height))
-        self.grid_length= int(field.get('grid_length', self.grid_length))
+        field = config["Field"]
+        self.vertical_shear = float(field.get("vertical_shear", self.vertical_shear))
+        self.reference_height = float(field.get("hub_height", self.reference_height))
+        self.grid_width = float(field.get("grid_width", self.grid_width))
+        self.grid_height = float(field.get("grid_heigth", self.grid_height))
+        self.grid_length = int(field.get("grid_length", self.grid_length))
 
     @property
     def total_time(self):
-        return self.n_samples*self.sample_time
-    
+        return self.n_samples * self.sample_time
+
     @property
     def freq_max(self):
-        return 1. / self.sample_time
+        return 1.0 / self.sample_time
 
     def __str__(self) -> str:
-        msg = f'Number of Samples Initialized @ {self.n_samples}\n'
-        msg += f'Sample Time Initialized @ {self.sample_time}\n'
-        msg += f'Wind Mean Speed Initialized @ {self.wind_mean}\n'
-        msg +=f'Wave length Initialized @ {self.Lv}\n'
-        msg +=f'Longitudinal Component Variance initialized @ {self.sigma_x}\n'
-        msg +=f'Transversal Component Variance initialized @  {self.sigma_y}\n'
-        msg +=f'Vertical Component Variance initialized @ {self.sigma_z}\n'
-        msg +=f'PL Exp Law initialized  @ {self.vertical_shear}\n'
-        msg +=f'Reference Height @ {self.reference_height}\n'
-        msg +=f'Grid Width @ {self.grid_width}\n'
-        msg +=f'Grid Height @ {self.grid_width}\n'
-        msg +=f'Grid Length @ {self.grid_length}\n'
+        msg = f"Number of Samples Initialized @ {self.n_samples}\n"
+        msg += f"Sample Time Initialized @ {self.sample_time}\n"
+        msg += f"Wind Mean Speed Initialized @ {self.wind_mean}\n"
+        msg += f"turbulence length scale for longitudinal component @ {self.scale_1}\n"
+        msg += f"turbulence length scale for transversal component @ {self.scale_2}\n"
+        msg += f"turbulence length scale for vertical component @ {self.scale_3}\n"
+        msg += (
+            f"Std of wind fluctuation of the longitudinal component @ {self.sigma_1}\n"
+        )
+        msg += (
+            f"std of wind fluctuation of the transversal component @  {self.sigma_2}\n"
+        )
+        msg += f"std of wind fluctuation of the vertical component @ {self.sigma_3}\n"
+        msg += f"PL Exp Law initialized  @ {self.vertical_shear}\n"
+        msg += f"Reference Height @ {self.reference_height}\n"
+        msg += f"Grid Width @ {self.grid_width}\n"
+        msg += f"Grid Height @ {self.grid_width}\n"
+        msg += f"Grid Length @ {self.grid_length}\n"
         return msg
